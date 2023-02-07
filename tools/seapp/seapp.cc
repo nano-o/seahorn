@@ -684,10 +684,14 @@ int main(int argc, char **argv) {
 
     // -- Enable function slicing
     // AG: NOT USED. Not part of std pipeline
-    pm_wrapper.add(seahorn::createSliceFunctionsPass());
+    // pm_wrapper.add(seahorn::createSliceFunctionsPass());
 
     // -- Create a main function if we sliced it away
-    pm_wrapper.add(seahorn::createDummyMainFunctionPass());
+    // with the changes to DummyMainFunctionPass, this just erases main...
+    // so, commenting out (seems unecessary given the comment in the paragraph
+    // above)
+
+    // pm_wrapper.add(seahorn::createDummyMainFunctionPass());
 
     // AG: Dangerous. Promotes verifier.assume() to llvm.assume()
     if (PromoteAssumptions)

@@ -57,15 +57,23 @@ public:
 
   bool runOnModule(Module &M) override {
 
-    if (M.getFunction("main")) {
-      LOG("dummy-main", errs() << "DummyMainFunction: Main already exists.\n");
-
-      return false;
-    }
 
     Function *Entry = nullptr;
-    if (EntryPoint != "")
+    llvm::Function* origMain = M.getFunction("main");
+    if (EntryPoint != "") {
       Entry = M.getFunction(EntryPoint);
+      if (origMain) {
+              LOG("dummy-main", errs() << "DummyMainFunction: Main already exists; deleting it.\n");
+              origMain->eraseFromParent();
+      }
+    }
+    else if (origMain) {
+      LOG("dummy-main", errs() << "DummyMainFunction: Leaving main alone.\n");
+      return 0;
+    }
+    if (!Entry) {
+      LOG("dummy-main", errs() << "DummyMainFunction: Entry does not exist.\n");
+    }
 
     // --- Create main
     LLVMContext &ctx = M.getContext();
